@@ -1,0 +1,6 @@
+allowBuilds:
+  esbuild: true
+
+minimumReleaseAgeExclude:
+  - '@triggerix/core'
+  - '@triggerix/editor'

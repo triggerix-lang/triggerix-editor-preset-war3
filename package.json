@@ -1,0 +1,33 @@
+{
+  "name": "triggerix-ui-preset-war3",
+  "version": "0.0.0",
+  "packageManager": "pnpm@11.6.0",
+  "description": "War3-style template editor preset for Triggerix",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "unbuild --stub",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@triggerix/core": "^0.0.3",
+    "@triggerix/editor": "^0.0.3"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3",
+    "unbuild": "^3.6.1"
+  }
+}
