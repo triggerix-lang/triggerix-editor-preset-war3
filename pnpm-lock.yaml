@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@triggerix/core':
-        specifier: ^0.0.5
-        version: 0.0.5
+        specifier: ^0.0.6
+        version: 0.0.6
       '@triggerix/editor':
-        specifier: ^0.0.5
-        version: 0.0.5
+        specifier: ^0.0.6
+        version: 0.0.6
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^9.0.0
@@ -619,11 +619,14 @@ packages:
     peerDependencies:
       eslint: ^9.0.0 || ^10.0.0
 
-  '@triggerix/core@0.0.5':
-    resolution: {integrity: sha512-2NPrt7a3lJCdZ4tn+Q33vhO5tKaj0nGxSRPEKMNjD563tnN/JDlfd4Zpx5R5MrjY7eGclawT/P2e9Lfhhe7ygA==}
+  '@triggerix/core@0.0.6':
+    resolution: {integrity: sha512-dcrjgmTVv0JIwEXUQlAHYDVIFP8LHSffFnXKmT+Rw+kgmVpdFRUUzs42z4xPEhZy21RGHzq82SWnyr23NBwejg==}
 
-  '@triggerix/editor@0.0.5':
-    resolution: {integrity: sha512-Quns6Bku8F+bm0I9n2seb0+qP+NU+D3j4ceYTJXIs7cIJM3voMlwVinPgZbg+Ex6RtnzMPlbg1NVYpjyjPVc8A==}
+  '@triggerix/editor@0.0.6':
+    resolution: {integrity: sha512-P/S4y/PVd2SBhFuIwpkdtNZV/u/hqfI6B/7hPD4ACPhVaoD4YtyVEGywIfVCfBIL5zZnmOKanwai9sOrrZUpOQ==}
+
+  '@triggerix/registry@0.0.6':
+    resolution: {integrity: sha512-/0SVI3kPH7C2WNlW+RduJUbbKo0c220xsjrmfe8/wqQ1oFr19xHDcbDWxvEPd5UUtiPllMo08r14iXJ2iXkWsA==}
 
   '@types/debug@4.1.13':
     resolution: {integrity: sha512-KSVgmQmzMwPlmtljOomayoR89W4FynCAi3E8PPs7vmDVPe84hT+vGPKkJfThkmXs0x0jAaa9U8uW8bbfyS2fWw==}
@@ -2567,11 +2570,14 @@ snapshots:
       estraverse: 5.3.0
       picomatch: 4.0.4
 
-  '@triggerix/core@0.0.5': {}
+  '@triggerix/core@0.0.6': {}
 
-  '@triggerix/editor@0.0.5':
+  '@triggerix/editor@0.0.6':
     dependencies:
-      '@triggerix/core': 0.0.5
+      '@triggerix/core': 0.0.6
+      '@triggerix/registry': 0.0.6
+
+  '@triggerix/registry@0.0.6': {}
 
   '@types/debug@4.1.13':
     dependencies:
