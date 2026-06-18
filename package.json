@@ -1,7 +1,7 @@
 {
   "name": "triggerix-editor-preset-war3",
   "type": "module",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "packageManager": "pnpm@11.7.0",
   "description": "War3-style template editor preset for Triggerix",
   "homepage": "https://github.com/triggerix-lang/triggerix-editor-preset-war3#readme",
