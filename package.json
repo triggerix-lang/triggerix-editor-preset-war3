@@ -4,13 +4,13 @@
   "version": "0.0.6",
   "packageManager": "pnpm@11.7.0",
   "description": "War3-style template editor preset for Triggerix",
-  "homepage": "https://github.com/triggerix-lang/triggerix-editor-preset-war3#readme",
+  "homepage": "https://github.com/triggerix-collective/triggerix-editor-preset-war3#readme",
   "repository": {
     "type": "git",
-    "url": "git@github.com:triggerix-lang/triggerix-editor-preset-war3.git"
+    "url": "git@github.com:triggerix-collective/triggerix-editor-preset-war3.git"
   },
   "bugs": {
-    "url": "https://github.com/triggerix-lang/triggerix-editor-preset-war3/issues"
+    "url": "https://github.com/triggerix-collective/triggerix-editor-preset-war3/issues"
   },
   "exports": {
     ".": {
