@@ -37,7 +37,7 @@ export interface War3Editor extends Editor<War3EditorState> {
   getAvailableConditions: () => War3ConditionDef[]
 
   // 描述符
-  getEventDescriptor: () => ItemDescriptor | null
+  getEventDescriptor: (index?: number) => ItemDescriptor | null
   getActionDescriptor: (actionIndex: number) => ItemDescriptor | null
   getConditionDescriptor: (conditionIndex: number) => ItemDescriptor | null
   getToolDescriptor: (toolName: string, slotValues?: Record<string, SlotValueEntry>) => ToolDescriptor | null
@@ -47,6 +47,9 @@ export interface War3Editor extends Editor<War3EditorState> {
   setEvent: (id: string) => void
   clearEvent: () => void
   setEventSlot: (key: string, entry: SlotValueEntry) => void
+  addEvent: (id: string) => number
+  removeEvent: (index: number) => void
+  setEventSlotAt: (index: number, key: string, entry: SlotValueEntry) => void
   addAction: (id: string) => void
   removeAction: (index: number) => void
   moveAction: (from: number, to: number) => void
@@ -92,11 +95,12 @@ export function createWar3Editor(): War3Editor {
     getAvailableConditions: () => registry.getConditions(),
 
     // --- 描述符 ---
-    getEventDescriptor: () => {
+    getEventDescriptor: (index = 0) => {
       const state = stateManager.getState()
-      if (!state.event)
+      const ev = state.events[index]
+      if (!ev)
         return null
-      return getEventDescriptor(registry, state.event.id, state.event.slotValues)
+      return getEventDescriptor(registry, ev.id, ev.slotValues)
     },
     getActionDescriptor: (index) => {
       const state = stateManager.getState()
@@ -119,6 +123,9 @@ export function createWar3Editor(): War3Editor {
     setEvent: id => stateManager.setEvent(id),
     clearEvent: () => stateManager.clearEvent(),
     setEventSlot: (key, entry) => stateManager.setEventSlot(key, entry),
+    addEvent: id => stateManager.addEvent(id),
+    removeEvent: index => stateManager.removeEvent(index),
+    setEventSlotAt: (index, key, entry) => stateManager.setEventSlotAt(index, key, entry),
     addAction: id => stateManager.addAction(id),
     removeAction: index => stateManager.removeAction(index),
     moveAction: (from, to) => stateManager.moveAction(from, to),

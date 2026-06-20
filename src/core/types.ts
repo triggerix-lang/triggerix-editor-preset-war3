@@ -93,7 +93,12 @@ export interface ItemState {
 }
 
 export interface War3EditorState {
-  event: ItemState | null
+  /**
+   * Event sources that activate the trigger (OR semantics across the array).
+   * Empty array = no event configured.
+   * Single-event UI usually keeps this at length 0 or 1.
+   */
+  events: ItemState[]
   conditions: ItemState[]
   actions: ItemState[]
 }

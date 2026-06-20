@@ -50,15 +50,15 @@ function bootstrap() {
 describe('createWar3Editor - lifecycle', () => {
   it('starts with an empty state', () => {
     const editor = createWar3Editor()
-    expect(editor.getState()).toEqual({ event: null, conditions: [], actions: [] })
+    expect(editor.getState()).toEqual({ events: [], conditions: [], actions: [] })
   })
 
-  it('toTrigger on an empty editor produces a trigger with empty event and no actions', () => {
+  it('toTrigger on an empty editor produces a trigger with empty events and no actions', () => {
     const editor = createWar3Editor()
     const t = editor.toTrigger('trig')
     expect(t).toMatchObject({
       id: 'trig',
-      event: { type: '' },
+      events: [],
       actions: []
     })
     expect(t.conditions).toBeUndefined()
@@ -70,7 +70,7 @@ describe('createWar3Editor - lifecycle', () => {
     editor.addAction('move')
     editor.addCondition('hp.less')
     editor.reset()
-    expect(editor.getState()).toEqual({ event: null, conditions: [], actions: [] })
+    expect(editor.getState()).toEqual({ events: [], conditions: [], actions: [] })
   })
 
   it('onChange listener fires on state changes and can be unsubscribed', () => {
@@ -304,11 +304,8 @@ describe('createWar3Editor - end-to-end toTrigger', () => {
     const t = editor.toTrigger('trig')
     expect(t).toEqual({
       id: 'trig',
-      event: { type: 'unit.dies', payload: { who: 'hero' } },
-      conditions: {
-        type: 'and',
-        conditions: [{ type: 'hp.less', params: { value: 0 } }]
-      },
+      events: [{ type: 'unit.dies', payload: { who: 'hero' } }],
+      conditions: [{ type: 'hp.less', params: { value: 0 } }],
       actions: [
         { type: 'move', params: { who: 'hero', target: { x: 1, y: 2 } } }
       ]

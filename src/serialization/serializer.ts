@@ -1,4 +1,4 @@
-import type { Action, ActionNode, ConditionGroup, Event, Trigger, Value } from '@triggerix/core'
+import type { Action, ActionNode, ConditionItem, Event, Trigger, Value } from '@triggerix/core'
 import type { War3Registry } from '../core/registry'
 import type { ItemState, SlotValueEntry, War3EditorState } from '../core/types'
 
@@ -49,6 +49,17 @@ function resolveItemParams(
 }
 
 /**
+ * Serialize an ItemState into an Event (with optional payload).
+ */
+function serializeEvent(item: ItemState, registry: War3Registry): Event {
+  const eventParams = resolveItemParams(item.slotValues, registry)
+  return {
+    type: item.id,
+    ...(eventParams ? { payload: eventParams } : {})
+  }
+}
+
+/**
  * Serialize an ItemState array into an Action list.
  */
 function serializeItems(
@@ -78,39 +89,36 @@ function generateTriggerId(): string {
  *
  * Output shape (compatible with @triggerix/core):
  *   {
- *     id, event: { type, payload? }, conditions?: { type:'and', conditions:[...] },
+ *     id, events: [{ type, payload? }, ...],
+ *     conditions?: ConditionItem[]  // flat array, implicit AND
  *     actions: [{ type, params? }]
  *   }
+ *
+ * - Multiple events use OR semantics at runtime.
+ * - Conditions are emitted as a flat `ConditionItem[]` (no ConditionGroup wrapper);
+ *   the runtime treats the array as an implicit AND with explicit nested groups allowed.
  */
 export function toTrigger(
   state: War3EditorState,
   registry: War3Registry,
   triggerId?: string
 ): Trigger {
-  const eventParams = state.event
-    ? resolveItemParams(state.event.slotValues, registry)
-    : undefined
-
-  const event: Event = {
-    type: state.event?.id ?? '',
-    ...(eventParams ? { payload: eventParams } : {})
-  }
-
+  const events: Event[] = state.events.map(item => serializeEvent(item, registry))
   const actions: ActionNode[] = serializeItems(state.actions, registry)
 
   const trigger: Trigger = {
     id: triggerId ?? generateTriggerId(),
-    event,
+    events,
     actions
   }
 
   if (state.conditions.length > 0) {
-    // Editor-level conditions actually use the Action shape ({ type, params }), which differs
-    // from core's Condition; the runtime layer handles the mapping, so we cast to ConditionGroup here.
-    trigger.conditions = {
-      type: 'and',
-      conditions: serializeItems(state.conditions, registry) as unknown as ConditionGroup['conditions']
-    }
+    // Editor-level conditions use the Action shape ({ type, params }), which differs
+    // from core's Condition. We pass them through as a flat array; the legacy
+    // editor-condition format is preserved as-is here — a future migration to real
+    // Condition shapes is tracked separately and does not block the events/conditions
+    // array refactor.
+    trigger.conditions = serializeItems(state.conditions, registry) as unknown as ConditionItem[]
   }
 
   return trigger

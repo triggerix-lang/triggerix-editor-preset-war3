@@ -90,13 +90,13 @@ describe('resolveSlotValue', () => {
 })
 
 describe('toTrigger', () => {
-  const initialState: War3EditorState = { event: null, conditions: [], actions: [] }
+  const initialState: War3EditorState = { events: [], conditions: [], actions: [] }
 
-  it('serializes a minimal state with empty event and no conditions', () => {
+  it('serializes a minimal state with empty events and no conditions', () => {
     const r = buildRegistry()
     const t = toTrigger(initialState, r)
     expect(t.id).toBeTypeOf('string')
-    expect(t.event).toEqual({ type: '' })
+    expect(t.events).toEqual([])
     expect(t.actions).toEqual([])
     expect(t.conditions).toBeUndefined()
   })
@@ -114,39 +114,63 @@ describe('toTrigger', () => {
     expect(t1.id).not.toBe(t2.id)
   })
 
-  it('serializes event with payload from resolved slot values', () => {
+  it('serializes a single event with payload from resolved slot values', () => {
     const r = buildRegistry()
     const state: War3EditorState = {
-      event: {
-        id: 'unit.dies',
-        slotValues: { who: { tool: 'ref', value: { $ref: 'hero' } } }
-      },
+      events: [
+        {
+          id: 'unit.dies',
+          slotValues: { who: { tool: 'ref', value: { $ref: 'hero' } } }
+        }
+      ],
       conditions: [],
       actions: []
     }
     const t = toTrigger(state, r, 'trig')
-    expect(t.event).toEqual({
-      type: 'unit.dies',
-      payload: { who: { $ref: 'hero' } }
-    })
+    expect(t.events).toEqual([
+      {
+        type: 'unit.dies',
+        payload: { who: { $ref: 'hero' } }
+      }
+    ])
   })
 
   it('omits payload when event has no resolvable slot values', () => {
     const r = buildRegistry()
     const state: War3EditorState = {
-      event: { id: 'tick', slotValues: {} },
+      events: [{ id: 'tick', slotValues: {} }],
       conditions: [],
       actions: []
     }
     const t = toTrigger(state, r, 'trig')
-    expect(t.event).toEqual({ type: 'tick' })
-    expect(t.event.payload).toBeUndefined()
+    expect(t.events).toEqual([{ type: 'tick' }])
+    expect(t.events[0].payload).toBeUndefined()
+  })
+
+  it('serializes multiple events (multi-event OR trigger)', () => {
+    const r = buildRegistry()
+    const state: War3EditorState = {
+      events: [
+        { id: 'tick', slotValues: {} },
+        {
+          id: 'unit.dies',
+          slotValues: { who: { tool: 'ref', value: { $ref: 'hero' } } }
+        }
+      ],
+      conditions: [],
+      actions: []
+    }
+    const t = toTrigger(state, r, 'trig')
+    expect(t.events).toEqual([
+      { type: 'tick' },
+      { type: 'unit.dies', payload: { who: { $ref: 'hero' } } }
+    ])
   })
 
   it('serializes actions with params from resolved slot values', () => {
     const r = buildRegistry()
     const state: War3EditorState = {
-      event: null,
+      events: [],
       conditions: [],
       actions: [
         { id: 'move', slotValues: { x: { tool: 'num', value: 1 }, y: { tool: 'num', value: 2 } } },
@@ -159,20 +183,17 @@ describe('toTrigger', () => {
     expect(t.actions[1]).toEqual({ type: 'noop' })
   })
 
-  it('builds an AND condition group when conditions are present', () => {
+  it('emits a flat conditions array (implicit AND, no ConditionGroup wrapper) when conditions are present', () => {
     const r = buildRegistry()
     const state: War3EditorState = {
-      event: null,
+      events: [],
       conditions: [
         { id: 'c1', slotValues: { v: { tool: 'num', value: 1 } } }
       ],
       actions: []
     }
     const t = toTrigger(state, r, 'trig')
-    expect(t.conditions).toEqual({
-      type: 'and',
-      conditions: [{ type: 'c1', params: { v: 1 } }]
-    })
+    expect(t.conditions).toEqual([{ type: 'c1', params: { v: 1 } }])
   })
 
   it('omits conditions block when no conditions exist', () => {
@@ -184,7 +205,7 @@ describe('toTrigger', () => {
   it('skips action params when all slot values are unresolved', () => {
     const r = buildRegistry()
     const state: War3EditorState = {
-      event: null,
+      events: [],
       conditions: [],
       actions: [
         { id: 'a', slotValues: { v: { tool: 'missing', value: 1 } } }
@@ -199,10 +220,12 @@ describe('toTrigger', () => {
   it('serializes the complete trigger shape end-to-end', () => {
     const r = buildRegistry()
     const state: War3EditorState = {
-      event: {
-        id: 'unit.dies',
-        slotValues: { who: { tool: 'ref', value: { $ref: 'hero' } } }
-      },
+      events: [
+        {
+          id: 'unit.dies',
+          slotValues: { who: { tool: 'ref', value: { $ref: 'hero' } } }
+        }
+      ],
       conditions: [
         { id: 'hp.less', slotValues: { v: { tool: 'num', value: 0 } } }
       ],
@@ -225,14 +248,13 @@ describe('toTrigger', () => {
     const t = toTrigger(state, r, 'trig')
     expect(t).toEqual({
       id: 'trig',
-      event: {
-        type: 'unit.dies',
-        payload: { who: { $ref: 'hero' } }
-      },
-      conditions: {
-        type: 'and',
-        conditions: [{ type: 'hp.less', params: { v: 0 } }]
-      },
+      events: [
+        {
+          type: 'unit.dies',
+          payload: { who: { $ref: 'hero' } }
+        }
+      ],
+      conditions: [{ type: 'hp.less', params: { v: 0 } }],
       actions: [
         { type: 'move', params: { p: { x: 1, y: 2 } } }
       ]

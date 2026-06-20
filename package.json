@@ -36,8 +36,8 @@
     "prepare": "simple-git-hooks"
   },
   "dependencies": {
-    "@triggerix/core": "^0.0.8",
-    "@triggerix/editor": "^0.0.8"
+    "@triggerix/core": "^0.0.10",
+    "@triggerix/editor": "^0.0.10"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^9.0.0",

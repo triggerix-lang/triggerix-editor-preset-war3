@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@triggerix/core':
-        specifier: ^0.0.8
-        version: 0.0.8
+        specifier: ^0.0.10
+        version: 0.0.10
       '@triggerix/editor':
-        specifier: ^0.0.8
-        version: 0.0.8
+        specifier: ^0.0.10
+        version: 0.0.10
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^9.0.0
@@ -741,14 +741,14 @@ packages:
     peerDependencies:
       eslint: ^9.0.0 || ^10.0.0
 
-  '@triggerix/core@0.0.8':
-    resolution: {integrity: sha512-HK2PFRQXOvJg6bUZHkjjusOznBOKf1rDjbrtPCPc7RQiiTMijDjOTCG/NTi1+w5vvuamhYwJWawwruwZHdTVzQ==}
+  '@triggerix/core@0.0.10':
+    resolution: {integrity: sha512-cIXeyZLoW+i3Wqc+UWOZzPtNAhbmp9uZAdXAFaVnIh+iK0n8/SZXP3WPmDdakJWgcrBgPIVuZjz3ubyHximajA==}
 
-  '@triggerix/editor@0.0.8':
-    resolution: {integrity: sha512-+Ux3IxLgE2XWBwgWJJdR/bH8Tr51Qj+F3vMxvculWD3UJqj7kkFc3Vj+eOkFn0ttuxxq6DPr7jS88JFVCfidHg==}
+  '@triggerix/editor@0.0.10':
+    resolution: {integrity: sha512-wVwArtTC89gliq+0a2jzxDLWRfZHNYqUPnqL6KFvF7Zr3nE9ewHNCTWLuVKx+V2KkJaBOqP/lU2WTzBsTjhW/A==}
 
-  '@triggerix/registry@0.0.8':
-    resolution: {integrity: sha512-q+fYGXTC8qi60Wxlc2mXu6RIkQYlXmWX65Cq4MgiUVvsVoJguAefPKhNZxmqhyf8eT0k/PPMFx2/v0FAlsBrGQ==}
+  '@triggerix/registry@0.0.10':
+    resolution: {integrity: sha512-MJZcKeIWE6wSMMC7QVj+1l6hGuXaTXZ2PZIoCR3Gql++z0i1KYO1fMZwpxtd7uf8wTZU9DihwmBkIGFeNwQgzA==}
 
   '@tybys/wasm-util@0.10.2':
     resolution: {integrity: sha512-RoBvJ2X0wuKlWFIjrwffGw1IqZHKQqzIchKaadZZfnNpsAYp2mM0h36JtPCjNDAHGgYez/15uMBpfGwchhiMgg==}
@@ -1155,8 +1155,8 @@ packages:
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
 
-  electron-to-chromium@1.5.375:
-    resolution: {integrity: sha512-ZWP5eB4BVPW/ZYo9252hQZHZ5XavtsTgpbhcmMmRwymavC5AsLWQWBPaKMeNd2LW0KGby5HPXvj7+sr4ta5j/Q==}
+  electron-to-chromium@1.5.376:
+    resolution: {integrity: sha512-cUVA7/RvbFTEuw/i3obUwDTRIXojaxkResf+ibByPFxjc6XK3VNtcQXV0NSbAlJ0FMjcJGgftVVB4Qo184EXvA==}
 
   empathic@2.0.1:
     resolution: {integrity: sha512-YGRs8knHhKHVShLkFET/rWAU8kmHbOV5LwN938RHI0pljAJ1Gf6SzXsSmRaEzcXTtOOmVqJ5+WtQPL5uigY50Q==}
@@ -1887,8 +1887,8 @@ packages:
     engines: {node: ^22 || >= 24}
     hasBin: true
 
-  nanoid@3.3.12:
-    resolution: {integrity: sha512-ZB9RH/39qpq5Vu6Y+NmUaFhQR6pp+M2Xt76XBnEwDaGcVAqhlvxrl3B2bKS5D3NH3QR76v3aSrKaF/Kiy7lEtQ==}
+  nanoid@3.3.13:
+    resolution: {integrity: sha512-sPdqC6ByMVVGvF1ynvvMo0/o+oD1VX7DaHhijt1bFgjvBkHBib4t49GoNDhf2NDta4oeUNlaGbSt5K7qjZ955Q==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -3021,14 +3021,14 @@ snapshots:
       estraverse: 5.3.0
       picomatch: 4.0.4
 
-  '@triggerix/core@0.0.8': {}
+  '@triggerix/core@0.0.10': {}
 
-  '@triggerix/editor@0.0.8':
+  '@triggerix/editor@0.0.10':
     dependencies:
-      '@triggerix/core': 0.0.8
-      '@triggerix/registry': 0.0.8
+      '@triggerix/core': 0.0.10
+      '@triggerix/registry': 0.0.10
 
-  '@triggerix/registry@0.0.8': {}
+  '@triggerix/registry@0.0.10': {}
 
   '@tybys/wasm-util@0.10.2':
     dependencies:
@@ -3302,7 +3302,7 @@ snapshots:
     dependencies:
       baseline-browser-mapping: 2.10.38
       caniuse-lite: 1.0.30001799
-      electron-to-chromium: 1.5.375
+      electron-to-chromium: 1.5.376
       node-releases: 2.0.48
       update-browserslist-db: 1.2.3(browserslist@4.28.2)
 
@@ -3495,7 +3495,7 @@ snapshots:
       domelementtype: 2.3.0
       domhandler: 5.0.3
 
-  electron-to-chromium@1.5.375: {}
+  electron-to-chromium@1.5.376: {}
 
   empathic@2.0.1: {}
 
@@ -4432,7 +4432,7 @@ snapshots:
 
   nano-staged@1.0.2: {}
 
-  nanoid@3.3.12: {}
+  nanoid@3.3.13: {}
 
   natural-compare@1.4.0: {}
 
@@ -4670,7 +4670,7 @@ snapshots:
 
   postcss@8.5.15:
     dependencies:
-      nanoid: 3.3.12
+      nanoid: 3.3.13
       picocolors: 1.1.1
       source-map-js: 1.2.1
 

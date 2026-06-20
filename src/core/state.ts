@@ -2,7 +2,7 @@ import type { SlotValueEntry, War3EditorState } from './types'
 import { ObservableState } from '@triggerix/editor'
 
 const INITIAL_STATE: War3EditorState = {
-  event: null,
+  events: [],
   conditions: [],
   actions: []
 }
@@ -16,26 +16,65 @@ export class War3EditorStateManager extends ObservableState<War3EditorState> {
     super({ ...INITIAL_STATE })
   }
 
-  // --- Event ---
+  // --- Events ---
+  /**
+   * Single-event UI helper: reset the events array to one freshly-initialized event.
+   * Preserves conditions and actions; only the events slot is replaced.
+   */
   setEvent(id: string): void {
-    this.setState(s => ({ ...s, event: { id, slotValues: {} } }))
+    this.setState(s => ({
+      ...s,
+      events: [{ id, slotValues: {} }]
+    }))
   }
 
+  /**
+   * Clear all events (single-event UI equivalent: no event configured).
+   */
   clearEvent(): void {
-    this.setState(s => ({ ...s, event: null }))
+    this.setState(s => ({ ...s, events: [] }))
   }
 
+  /**
+   * Single-event UI helper: set a slot on events[0]. No-op when no event is configured.
+   */
   setEventSlot(key: string, entry: SlotValueEntry): void {
+    this.setEventSlotAt(0, key, entry)
+  }
+
+  /**
+   * Multi-event: append a freshly-initialized event. Returns the new event's index.
+   */
+  addEvent(id: string): number {
+    const index = this.getState().events.length
+    this.setState(s => ({ ...s, events: [...s.events, { id, slotValues: {} }] }))
+    return index
+  }
+
+  /**
+   * Multi-event: remove an event by index. Out-of-range index is a no-op.
+   */
+  removeEvent(index: number): void {
+    this.setState(s => ({
+      ...s,
+      events: s.events.filter((_, i) => i !== index)
+    }))
+  }
+
+  /**
+   * Multi-event: set a slot on the event at the given index. Out-of-range index is a no-op.
+   */
+  setEventSlotAt(index: number, key: string, entry: SlotValueEntry): void {
     this.setState((s) => {
-      if (!s.event)
+      const target = s.events[index]
+      if (!target)
         return s
-      return {
-        ...s,
-        event: {
-          ...s.event,
-          slotValues: { ...s.event.slotValues, [key]: entry }
-        }
+      const events = [...s.events]
+      events[index] = {
+        ...target,
+        slotValues: { ...target.slotValues, [key]: entry }
       }
+      return { ...s, events }
     })
   }
 

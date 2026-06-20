@@ -5,45 +5,45 @@ import { War3EditorStateManager } from '../../src/core/state'
 const entry = (value: unknown): SlotValueEntry => ({ tool: 't', value })
 
 describe('war3EditorStateManager - initial state', () => {
-  it('starts with null event and empty arrays', () => {
+  it('starts with empty arrays', () => {
     const m = new War3EditorStateManager()
-    expect(m.getState()).toEqual({ event: null, conditions: [], actions: [] })
+    expect(m.getState()).toEqual({ events: [], conditions: [], actions: [] })
   })
 })
 
 describe('war3EditorStateManager - event', () => {
-  it('setEvent initializes event with empty slotValues', () => {
+  it('setEvent initializes events with one event that has empty slotValues', () => {
     const m = new War3EditorStateManager()
     m.setEvent('e1')
-    expect(m.getState().event).toEqual({ id: 'e1', slotValues: {} })
+    expect(m.getState().events).toEqual([{ id: 'e1', slotValues: {} }])
   })
 
-  it('clearEvent resets event to null', () => {
+  it('clearEvent resets events to an empty array', () => {
     const m = new War3EditorStateManager()
     m.setEvent('e1')
     m.clearEvent()
-    expect(m.getState().event).toBeNull()
+    expect(m.getState().events).toEqual([])
   })
 
-  it('setEvent replaces previous event id and clears its slots', () => {
+  it('setEvent replaces the previous event id and clears its slots', () => {
     const m = new War3EditorStateManager()
     m.setEvent('e1')
     m.setEventSlot('k', entry(1))
     m.setEvent('e2')
-    expect(m.getState().event).toEqual({ id: 'e2', slotValues: {} })
+    expect(m.getState().events).toEqual([{ id: 'e2', slotValues: {} }])
   })
 
-  it('setEventSlot stores slot value for the current event', () => {
+  it('setEventSlot stores slot value on the single configured event', () => {
     const m = new War3EditorStateManager()
     m.setEvent('e1')
     m.setEventSlot('who', entry('hero'))
-    expect(m.getState().event?.slotValues.who).toEqual({ tool: 't', value: 'hero' })
+    expect(m.getState().events[0]?.slotValues.who).toEqual({ tool: 't', value: 'hero' })
   })
 
   it('setEventSlot is a no-op when there is no event', () => {
     const m = new War3EditorStateManager()
     m.setEventSlot('who', entry('hero'))
-    expect(m.getState().event).toBeNull()
+    expect(m.getState().events).toEqual([])
   })
 
   it('setEventSlot merges with existing slots (does not overwrite other keys)', () => {
@@ -51,7 +51,7 @@ describe('war3EditorStateManager - event', () => {
     m.setEvent('e1')
     m.setEventSlot('a', entry(1))
     m.setEventSlot('b', entry(2))
-    expect(m.getState().event?.slotValues).toEqual({
+    expect(m.getState().events[0]?.slotValues).toEqual({
       a: { tool: 't', value: 1 },
       b: { tool: 't', value: 2 }
     })
@@ -62,7 +62,58 @@ describe('war3EditorStateManager - event', () => {
     m.setEvent('e1')
     m.setEventSlot('k', entry(1))
     m.setEventSlot('k', entry(2))
-    expect(m.getState().event?.slotValues.k).toEqual({ tool: 't', value: 2 })
+    expect(m.getState().events[0]?.slotValues.k).toEqual({ tool: 't', value: 2 })
+  })
+
+  it('setEvent preserves conditions and actions', () => {
+    const m = new War3EditorStateManager()
+    m.addAction('a1')
+    m.addCondition('c1')
+    m.setEvent('e1')
+    expect(m.getState().events).toEqual([{ id: 'e1', slotValues: {} }])
+    expect(m.getState().actions.map(a => a.id)).toEqual(['a1'])
+    expect(m.getState().conditions.map(c => c.id)).toEqual(['c1'])
+  })
+})
+
+describe('war3EditorStateManager - multi-event', () => {
+  it('addEvent appends and returns the new event index', () => {
+    const m = new War3EditorStateManager()
+    expect(m.addEvent('e1')).toBe(0)
+    expect(m.addEvent('e2')).toBe(1)
+    expect(m.getState().events.map(e => e.id)).toEqual(['e1', 'e2'])
+  })
+
+  it('removeEvent drops the event at the given index', () => {
+    const m = new War3EditorStateManager()
+    m.addEvent('e1')
+    m.addEvent('e2')
+    m.addEvent('e3')
+    m.removeEvent(1)
+    expect(m.getState().events.map(e => e.id)).toEqual(['e1', 'e3'])
+  })
+
+  it('removeEvent with out-of-range index is a no-op', () => {
+    const m = new War3EditorStateManager()
+    m.addEvent('e1')
+    m.removeEvent(5)
+    expect(m.getState().events).toHaveLength(1)
+  })
+
+  it('setEventSlotAt writes the slot on the targeted event', () => {
+    const m = new War3EditorStateManager()
+    m.addEvent('e1')
+    m.addEvent('e2')
+    m.setEventSlotAt(1, 'k', entry('v'))
+    expect(m.getState().events[0]?.slotValues).toEqual({})
+    expect(m.getState().events[1]?.slotValues.k).toEqual({ tool: 't', value: 'v' })
+  })
+
+  it('setEventSlotAt with out-of-range index is a no-op', () => {
+    const m = new War3EditorStateManager()
+    m.addEvent('e1')
+    m.setEventSlotAt(2, 'k', entry('v'))
+    expect(m.getState().events[0]?.slotValues).toEqual({})
   })
 })
 
@@ -175,7 +226,7 @@ describe('war3EditorStateManager - reset', () => {
     m.addCondition('c1')
     m.setConditionSlot(0, 'k', entry(1))
     m.reset()
-    expect(m.getState()).toEqual({ event: null, conditions: [], actions: [] })
+    expect(m.getState()).toEqual({ events: [], conditions: [], actions: [] })
   })
 })
 

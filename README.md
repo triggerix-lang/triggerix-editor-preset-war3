@@ -169,7 +169,7 @@ War3ConditionDef / ToolDef                      │
 - **查询**：`getAvailableEvents` / `getAvailableActions` / `getAvailableConditions`
 - **描述符**：`getEventDescriptor` / `getActionDescriptor(index)` / `getConditionDescriptor(index)` / `getToolDescriptor(name, slotValues?)` / `getSlotTools(slotDef)`
 - **状态操作**：
-  - Event：`setEvent` / `clearEvent` / `setEventSlot`
+  - Event：`setEvent` / `clearEvent` / `setEventSlot`（单事件便捷）；多事件：`addEvent` / `removeEvent` / `setEventSlotAt(index, …)`
   - Action：`addAction` / `removeAction` / `moveAction` / `setActionSlot`
   - Condition：`addCondition` / `removeCondition` / `setConditionSlot`
 - **值来源**：`getValueSources(valueType?)` 返回 `{ conditions, tools }`
@@ -191,14 +191,14 @@ War3ConditionDef / ToolDef                      │
 
 ```ts
 {
-  id: string,                 // 默认 crypto.randomUUID()，可外部传入
-  event: { type: string, payload?: Record<string, Value> },
-  conditions?: { type: 'and', conditions: Action[] }, // 仅当 conditions 非空时存在
-  actions: Action[]           // [{ type, params? }]
+  id: string,                  // 默认 crypto.randomUUID()，可外部传入
+  events: { type: string, payload?: Record<string, Value> }[], // 多事件 OR 触发
+  conditions?: ConditionItem[], // 扁平数组，默认隐式 AND，可嵌套显式 group
+  actions: Action[]            // [{ type, params? }]
 }
 ```
 
-> 注：编辑期 Condition 在内部以 `Action` 形式（`{ type, params }`）存储，序列化为 `and` 分组；Condition ↔ Action 的语义映射由运行时层完成。
+> 注：编辑期 Condition 在内部以 `Action` 形式（`{ type, params }`）存储，作为扁平 `ConditionItem[]` 透传至运行时；Condition ↔ Action 的语义映射由运行时层完成。
 
 ## 模块结构
 
@@ -288,9 +288,9 @@ const emitEventTool = defineCompositeTool<
 
 ```ts
 interface War3EditorState {
-  event: ItemState | null // 单一事件
+  events: ItemState[]   // 多事件源（运行时按 OR 匹配）；UI 单事件时通常为 0 或 1 项
   conditions: ItemState[] // 条件列表（AND 语义）
-  actions: ItemState[] // 动作列表（顺序敏感）
+  actions: ItemState[]   // 动作列表（顺序敏感）
 }
 
 interface ItemState {
